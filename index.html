@@ -5,115 +5,138 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0a0a23">
   <title>StarScript</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       min-height: 100vh;
-      transition: background 0.3s;
-      overflow-x: hidden;
-    }
-    .cosmic {
       background: linear-gradient(135deg, #0a0a23, #1c2526);
       color: #e0e0ff;
-      position: relative;
+      overflow-x: hidden;
+      transition: background 0.3s;
     }
-    .cosmic::before {
-      content: '';
+    body.light {
+      background: #f5f5f5;
+      color: #333;
+    }
+    body.dark {
+      background: #1a1a1a;
+      color: #e0e0e0;
+    }
+    .cosmic-bg {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3CradialGradient id="star"%3E%3Cstop offset="0%" stop-color="white"/%3E%3Cstop offset="100%" stop-color="transparent"/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx="10%" cy="20%" r="2" fill="url(%23star)"/%3E%3Ccircle cx="80%" cy="30%" r="1" fill="url(%23star)"/%3E%3Ccircle cx="50%" cy="70%" r="1.5" fill="url(%23star)"/%3E%3Ccircle cx="20%" cy="50%" r="1" fill="url(%23star)"/%3E%3C/svg%3E');
+      background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Cdefs%3E%3CradialGradient id="starGrad"%3E%3Cstop offset="0%" stop-color="white"/%3E%3Cstop offset="70%" stop-color="rgba(255,255,255,0.2)"/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx="15" cy="20" r="0.5" fill="url(%23starGrad)"/%3E%3Ccircle cx="80" cy="30" r="0.3" fill="url(%23starGrad)"/%3E%3Ccircle cx="50" cy="70" r="0.4" fill="url(%23starGrad)"/%3E%3Ccircle cx="20" cy="50" r="0.3" fill="url(%23starGrad)"/%3E%3Ccircle cx="70" cy="10" r="0.35" fill="url(%23starGrad)"/%3E%3C/svg%3E');
       animation: twinkle 10s infinite;
-      opacity: 0.3;
+      opacity: 0.5;
       pointer-events: none;
     }
-    .light {
-      background: #f5f5f5;
-      color: #333;
-    }
-    .dark {
-      background: #1a1a1a;
-      color: #e0e0e0;
-    }
     @keyframes twinkle {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.6; }
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.8; }
     }
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 2rem;
-      background: rgba(0, 0, 0, 0.5);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      padding: 1.5rem 3rem;
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 10;
     }
     header h1 {
       margin: 0;
-      font-size: 1.8rem;
-      letter-spacing: 2px;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
     .toolbar {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 8px;
-      margin: 1rem;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      gap: 0.8rem;
+      padding: 1.2rem;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 12px;
+      margin: 1.5rem 3rem;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
     }
     .toolbar button, .toolbar select {
-      background: linear-gradient(135deg, #2a2a4e, #3b3b6b);
+      background: linear-gradient(135deg, #2a2a4e, #4a4a8e);
       color: #fff;
       border: none;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.2s;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      font-weight: 500;
+      text-align: center;
     }
-    .toolbar button:hover {
+    .toolbar button:hover, .toolbar select:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
     }
     .main {
       display: flex;
-      padding: 1rem 2rem;
-      gap: 2rem;
+      padding: 1.5rem 3rem;
+      gap: 2.5rem;
       flex-wrap: wrap;
+      position: relative;
+      z-index: 5;
     }
     #editor-container {
-      flex: 2;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-      min-height: 500px;
+      flex: 3;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      min-height: 650px;
+      position: relative;
+    }
+    .ql-container {
+      font-size: 1.1rem;
+      line-height: 1.6;
     }
     .ql-editor {
-      min-height: 400px;
-      background: rgba(255, 255, 255, 0.1);
+      min-height: 550px;
+      background: rgba(255, 255, 255, 0.2);
       color: inherit;
-      border-radius: 8px;
-      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+    .ql-editor:empty:before {
+      content: attr(data-placeholder);
+      color: rgba(255, 255, 255, 0.5);
+      font-style: italic;
+    }
+    .ql-toolbar {
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: 1rem;
     }
     #word-count {
-      margin-top: 0.8rem;
-      font-size: 0.9rem;
-      opacity: 0.8;
+      margin-top: 1.2rem;
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 500;
     }
     .chatbot, .file-manager {
       flex: 1;
-      max-width: 350px;
-      padding: 1.5rem;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      max-width: 450px;
+      padding: 1.8rem;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
       transition: transform 0.3s;
     }
     .chatbot.hidden {
@@ -122,60 +145,87 @@
     }
     .chatbot form, .file-manager form {
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
     }
     .chatbot input, .file-manager input {
       flex: 1;
-      padding: 0.7rem;
+      padding: 0.9rem;
       border: none;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
       color: inherit;
+      font-size: 1rem;
+      font-weight: 500;
     }
     .chatbot button, .file-manager button {
-      background: linear-gradient(135deg, #2a2a4e, #3b3b6b);
+      background: linear-gradient(135deg, #2a2a4e, #4a4a8e);
       color: #fff;
       border: none;
-      padding: 0.7rem;
-      border-radius: 6px;
+      padding: 0.9rem;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
     }
     .file-manager ul {
       list-style: none;
       padding: 0;
+      max-height: 450px;
+      overflow-y: auto;
     }
     .file-manager li {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 1rem;
+    }
+    .file-manager li button {
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
     }
     .focus-mode #editor-container {
       position: fixed;
-      top: 10%;
-      left: 10%;
-      width: 80%;
-      height: 80%;
+      top: 5%;
+      left: 5%;
+      width: 90%;
+      height: 90%;
       z-index: 1000;
-      background: rgba(0, 0, 0, 0.9);
-      padding: 2rem;
+      background: rgba(0, 0, 0, 0.95);
+      padding: 2.5rem;
     }
     .focus-mode .toolbar, .focus-mode .chatbot, .focus-mode .file-manager, .focus-mode header {
       display: none;
     }
     @media (max-width: 768px) {
+      header {
+        padding: 1rem 1.5rem;
+      }
+      .toolbar {
+        margin: 1rem 1.5rem;
+        padding: 1rem;
+      }
       .main {
-        flex-direction: column;
+        padding: 1rem 1.5rem;
+        gap: 1.5rem;
+      }
+      #editor-container {
+        flex: 100%;
+        min-height: 500px;
       }
       .chatbot, .file-manager {
         max-width: 100%;
       }
+      .ql-editor {
+        min-height: 400px;
+      }
     }
   </style>
 </head>
-<body class="cosmic">
+<body>
+  <div class="cosmic-bg"></div>
   <header>
     <h1>StarScript</h1>
     <div>
@@ -183,36 +233,10 @@
       <button onclick="toggleChatbot()">Toggle StarBot</button>
     </div>
   </header>
-  <div class="toolbar">
-    <button onclick="quill.format('bold', true)">Bold</button>
-    <button onclick="quill.format('italic', true)">Italic</button>
-    <button onclick="quill.format('underline', true)">Underline</button>
-    <select onchange="quill.format('size', this.value)">
-      <option value="small">Small</option>
-      <option value="normal" selected>Normal</option>
-      <option value="large">Large</option>
-      <option value="huge">Huge</option>
-    </select>
-    <select onchange="quill.format('color', this.value)">
-      <option value="#ffffff">White</option>
-      <option value="#ff0000">Red</option>
-      <option value="#00ff00">Green</option>
-      <option value="#0000ff">Blue</option>
-    </select>
-    <button onclick="quill.format('list', 'bullet')">Bullet List</button>
-    <button onclick="quill.format('list', 'ordered')">Numbered List</button>
-    <button onclick="insertTable()">Insert Table</button>
-    <select onchange="loadTemplate(this.value)">
-      <option value="">Select Template</option>
-      <option value="resume">Resume</option>
-      <option value="letter">Letter</option>
-    </select>
-    <button onclick="exportPDF()">Export PDF</button>
-    <button onclick="toggleFocusMode()">Focus Mode</button>
-  </div>
+  <div class="toolbar"></div>
   <div class="main">
     <div id="editor-container">
-      <div id="editor"></div>
+      <div id="editor" data-placeholder="Start writing among the stars..."></div>
       <p id="word-count">Word count: 0</p>
     </div>
     <div class="chatbot">
@@ -227,7 +251,7 @@
     <div class="file-manager">
       <h3>Files</h3>
       <form onsubmit="saveDocument(event)">
-        <input type="text" id="file-name" placeholder="File name">
+        <input type="text" id="file-name" placeholder="File name" required>
         <input type="text" id="file-tag" placeholder="Tag (optional)">
         <button type="submit">Save</button>
       </form>
@@ -243,17 +267,125 @@
     let quill = new Quill('#editor', {
       theme: 'snow',
       modules: {
-        toolbar: false
+        toolbar: [
+          [{ header: [1, 2, false] }],
+          ['bold', 'italic', 'underline'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ color: [] }, { font: ['montserrat', 'arial', 'times new roman'] }],
+          ['link', 'image'],
+          ['clean']
+        ]
       }
     });
     let theme = 'cosmic';
-    let files = JSON.parse(localStorage.getItem('starscript-files')) || [];
     let isFocusMode = false;
     let isChatbotVisible = true;
     const templates = {
-      resume: '<h1>Resume</h1><h2>Name</h2><p>Address | Phone | Email</p><h3>Experience</h3><ul><li>Job Title - Company (Year-Year)</li></ul><h3>Education</h3><ul><li>Degree - University (Year)</li></ul>',
-      letter: '<h1>Letter</h1><p>Dear [Recipient],</p><p>Your content here...</p><p>Sincerely,<br>Your Name</p>'
+      resume: '<h1>Resume</h1><h2>Your Name</h2><p>Address | Phone | Email</p><h3>Experience</h3><ul><li>Job Title - Company (Year-Year)</li></ul><h3>Education</h3><ul><li>Degree - University (Year)</li></ul>',
+      letter: '<h1>Letter</h1><p>Dear [Recipient],</p><p>Your content here...</p><p>Sincerely,<br>Your Name</p>',
+      essay: '<h1>Essay Title</h1><p>Introduction paragraph...</p><h2>Section 1</h2><p>Content...</p><h2>Conclusion</h2><p>Summary...</p>'
     };
+    const DB_NAME = 'StarScriptDB';
+    const STORE_NAME = 'documents';
+    let db;
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 2);
+        request.onupgradeneeded = (event) => {
+          db = event.target.result;
+          const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+          store.createIndex('name', 'name', { unique: false });
+        };
+        request.onsuccess = (event) => {
+          db = event.target.result;
+          resolve(db);
+        };
+        request.onerror = (event) => reject(event.target.error);
+      });
+    }
+
+    async function saveDocument(event) {
+      event.preventDefault();
+      const name = document.getElementById('file-name').value.trim();
+      const tag = document.getElementById('file-tag').value.trim();
+      if (name) {
+        const content = quill.root.innerHTML;
+        const versions = JSON.parse(localStorage.getItem(`versions_${name}`)) || [];
+        versions.push({ content, timestamp: new Date().toISOString() });
+        localStorage.setItem(`versions_${name}`, JSON.stringify(versions.slice(-5)));
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        await store.add({ name, tag, content, timestamp: new Date() });
+        document.getElementById('file-name').value = '';
+        document.getElementById('file-tag').value = '';
+        renderFiles();
+      }
+    }
+
+    async function getDocuments() {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      return new Promise((resolve) => {
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result);
+      });
+    }
+
+    async function deleteDocument(id) {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      await store.delete(id);
+      renderFiles();
+    }
+
+    async function renameDocument(id) {
+      const newName = prompt('Enter new name:', '');
+      if (newName) {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const request = await store.get(id);
+        request.onsuccess = async () => {
+          const file = request.result;
+          file.name = newName;
+          await store.put(file);
+          renderFiles();
+        };
+      }
+    }
+
+    async function loadDocument(id) {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const request = await store.get(id);
+      request.onsuccess = () => {
+        const file = request.result;
+        quill.root.innerHTML = file.content;
+        updateWordCount();
+      };
+    }
+
+    async function showVersions(name) {
+      const versions = JSON.parse(localStorage.getItem(`versions_${name}`)) || [];
+      const ul = document.getElementById('file-list');
+      ul.innerHTML = '';
+      versions.forEach((version, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `Version ${index + 1} (${version.timestamp}) <button onclick="quill.root.innerHTML = \`${version.content.replace(/`/g, '\\`')}\`;updateWordCount()">Load</button>`;
+        ul.appendChild(li);
+      });
+    }
+
+    async function renderFiles() {
+      const files = await getDocuments();
+      const fileList = document.getElementById('file-list');
+      fileList.innerHTML = '';
+      files.forEach(file => {
+        const li = document.createElement('li');
+        li.innerHTML = `${file.name} ${file.tag ? `[${file.tag}]` : ''} <button onclick="loadDocument(${file.id})">Load</button> <button onclick="renameDocument(${file.id})">Rename</button> <button onclick="deleteDocument(${file.id})">Delete</button> <button onclick="showVersions('${file.name}')">Versions</button>`;
+        fileList.appendChild(li);
+      });
+    }
 
     function toggleTheme() {
       theme = theme === 'cosmic' ? 'light' : theme === 'light' ? 'dark' : 'cosmic';
@@ -279,13 +411,32 @@
           doc.save('document.pdf');
         },
         x: 10,
-        y: 10
+        y: 10,
+        html2canvas: { scale: 0.5 }
       });
     }
 
+    function exportTxt() {
+      const content = quill.getText();
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
     function insertTable() {
-      const tableHtml = '<table border="1"><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>';
+      const tableHtml = '<table border="1" style="width:100%;border-collapse:collapse;"><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>';
       quill.clipboard.dangerouslyPasteHTML(quill.getLength(), tableHtml);
+    }
+
+    function insertEquation() {
+      const equation = prompt('Enter equation (e.g., E=mc^2):');
+      if (equation) {
+        quill.clipboard.dangerouslyPasteHTML(quill.getLength(), `<p><code>${equation}</code></p>`);
+      }
     }
 
     function loadTemplate(template) {
@@ -293,6 +444,15 @@
         quill.root.innerHTML = templates[template];
         updateWordCount();
       }
+    }
+
+    function setPageLayout(layout) {
+      const margins = {
+        default: 'padding: 1.5rem;',
+        narrow: 'padding: 0.5rem;',
+        wide: 'padding: 2.5rem;'
+      };
+      document.querySelector('.ql-editor').style = margins[layout] || 'padding: 1.5rem;';
     }
 
     function toggleFocusMode() {
@@ -317,28 +477,39 @@
     }
 
     function processCommand(command) {
-      const doc = window.nlp(command);
+      const doc = window.nlp(command.toLowerCase());
       const responseEl = document.getElementById('chatbot-response');
+      let response = '';
       if (doc.has('make bold')) {
         quill.format('bold', true);
-        responseEl.textContent = 'Applied bold formatting.';
+        response = 'Applied bold formatting.';
       } else if (doc.has('summarize')) {
         const text = quill.getText();
         const summary = window.nlp(text).sentences().slice(0, 1).text();
-        responseEl.textContent = `Summary: ${summary}`;
+        response = `Summary: ${summary}`;
       } else if (doc.has('fix grammar')) {
-        responseEl.textContent = 'Basic grammar check: Ensure proper capitalization and punctuation.';
+        response = 'Suggestion: Check capitalization, punctuation, and subject-verb agreement.';
       } else if (doc.has('add title')) {
         quill.clipboard.dangerouslyPasteHTML(0, '<h1>New Title</h1>');
-        responseEl.textContent = 'Added a title.';
+        response = 'Added a title.';
       } else if (doc.has('make poetic')) {
         const text = quill.getText();
         quill.setText(text.replace(/is/g, 'doth').replace(/you/g, 'thou'));
-        responseEl.textContent = 'Text made more poetic.';
+        response = 'Text made more poetic.';
+      } else if (doc.has('insert table')) {
+        insertTable();
+        response = 'Inserted a table.';
+      } else if (doc.has('add cover page')) {
+        quill.clipboard.dangerouslyPasteHTML(0, '<h1 style="text-align:center;">My Starborn Story</h1><p style="text-align:center;">By [Your Name]</p><hr>');
+        response = 'Added a cover page.';
+      } else if (doc.has('insert divider')) {
+        quill.clipboard.dangerouslyPasteHTML(quill.getLength(), '<hr>');
+        response = 'Inserted a page divider.';
       } else {
-        responseEl.textContent = 'Command not recognized. Try "make bold", "summarize", "fix grammar", "add title", or "make poetic".';
+        response = 'Command not recognized. Try "make bold", "summarize", "fix grammar", "add title", "make poetic", "insert table", "add cover page", or "insert divider".';
       }
-      const utterance = new SpeechSynthesisUtterance(responseEl.textContent);
+      responseEl.textContent = response;
+      const utterance = new SpeechSynthesisUtterance(response);
       window.speechSynthesis.speak(utterance);
     }
 
@@ -349,62 +520,10 @@
       document.getElementById('chatbot-input').value = '';
     }
 
-    function saveDocument(event) {
-      event.preventDefault();
-      const name = document.getElementById('file-name').value;
-      const tag = document.getElementById('file-tag').value;
-      if (name) {
-        const content = quill.root.innerHTML;
-        files.push({ id: Date.now(), name, tag, content });
-        localStorage.setItem('starscript-files', JSON.stringify(files));
-        document.getElementById('file-name').value = '';
-        document.getElementById('file-tag').value = '';
-        renderFiles();
-      }
-    }
-
-    function deleteDocument(id) {
-      files = files.filter(file => file.id !== id);
-      localStorage.setItem('starscript-files', JSON.stringify(files));
-      renderFiles();
-    }
-
-    function loadDocument(id) {
-      const file = files.find(file => file.id === id);
-      if (file) {
-        quill.root.innerHTML = file.content;
-        updateWordCount();
-      }
-    }
-
-    function renameDocument(id) {
-      const newName = prompt('Enter new name:');
-      if (newName) {
-        const file = files.find(file => file.id === id);
-        if (file) {
-          file.name = newName;
-          localStorage.setItem('starscript-files', JSON.stringify(files));
-          renderFiles();
-        }
-      }
-    }
-
-    function renderFiles() {
-      const fileList = document.getElementById('file-list');
-      fileList.innerHTML = '';
-      files.forEach(file => {
-        const li = document.createElement('li');
-        li.innerHTML = `${file.name} ${file.tag ? `[${file.tag}]` : ''} <button onclick="loadDocument(${file.id})">Load</button> <button onclick="renameDocument(${file.id})">Rename</button> <button onclick="deleteDocument(${file.id})">Delete</button>`;
-        fileList.appendChild(li);
-      });
-    }
-
     // Initialize
+    openDB().then(() => renderFiles());
     quill.on('text-change', updateWordCount);
-    renderFiles();
     updateWordCount();
-
-    // Spell check
     document.getElementById('editor').spellcheck = true;
   </script>
 </body>
