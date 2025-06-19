@@ -1,908 +1,271 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StarScript - Write Among the Stars</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-```
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    :root {
-        --primary-bg: #0a0a0a;
-        --secondary-bg: #1a1a2e;
-        --accent-bg: #16213e;
-        --text-primary: #ffffff;
-        --text-secondary: #b0b0b0;
-        --accent-purple: #6c5ce7;
-        --accent-blue: #74b9ff;
-        --accent-pink: #fd79a8;
-        --accent-gold: #fdcb6e;
-        --border-color: #333;
-        --glow-color: rgba(108, 92, 231, 0.5);
-    }
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>StarScript</title>
+  <style>
     body {
-        font-family: 'Inter', sans-serif;
-        background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
-        color: var(--text-primary);
-        overflow-x: hidden;
-        min-height: 100vh;
+      margin: 0;
+      font-family: 'Inter', 'Arial', sans-serif;
+      min-height: 100vh;
+      transition: background 0.3s;
     }
 
-    /* Animated background stars */
-    .stars {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: -1;
+    .cosmic {
+      background: linear-gradient(135deg, #1a1a2e, #162447);
+      color: #fff;
+      animation: stars 20s infinite;
     }
 
-    .star {
-        position: absolute;
-        width: 2px;
-        height: 2px;
-        background: white;
-        border-radius: 50%;
-        animation: twinkle 3s infinite;
+    .light {
+      background: #fff;
+      color: #000;
     }
 
-    @keyframes twinkle {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 1; }
+    .dark {
+      background: #111;
+      color: #fff;
     }
 
-    /* Header */
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 2rem;
-        background: rgba(26, 26, 46, 0.8);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--border-color);
+    @keyframes stars {
+      0%, 100% { background-position: 0 0; }
+      50% { background-position: 100% 100%; }
     }
 
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--accent-purple);
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .logo i {
-        font-size: 2rem;
-        background: linear-gradient(45deg, var(--accent-purple), var(--accent-blue));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .btn {
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-primary {
-        background: linear-gradient(45deg, var(--accent-purple), var(--accent-blue));
-        color: white;
-    }
-
-    .btn-secondary {
-        background: transparent;
-        color: var(--text-secondary);
-        border: 1px solid var(--border-color);
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px var(--glow-color);
-    }
-
-    /* Main Layout */
-    .main-container {
-        display: flex;
-        height: calc(100vh - 80px);
-    }
-
-    /* Sidebar */
-    .sidebar {
-        width: 250px;
-        background: rgba(22, 33, 62, 0.8);
-        backdrop-filter: blur(10px);
-        border-right: 1px solid var(--border-color);
-        padding: 1rem;
-        overflow-y: auto;
-    }
-
-    .sidebar-section {
-        margin-bottom: 2rem;
-    }
-
-    .sidebar-title {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--text-secondary);
-        margin-bottom: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .document-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.7rem;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin-bottom: 0.5rem;
-    }
-
-    .document-item:hover {
-        background: rgba(108, 92, 231, 0.1);
-        transform: translateX(5px);
-    }
-
-    .document-item.active {
-        background: linear-gradient(90deg, rgba(108, 92, 231, 0.2), transparent);
-        border-left: 3px solid var(--accent-purple);
-    }
-
-    /* Editor Container */
-    .editor-container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        background: rgba(10, 10, 10, 0.5);
-    }
-
-    /* Toolbar */
     .toolbar {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 1rem;
-        background: rgba(26, 26, 46, 0.8);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid var(--border-color);
-        flex-wrap: wrap;
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      margin: 1rem;
     }
 
-    .toolbar-group {
-        display: flex;
-        gap: 0.25rem;
-        padding-right: 1rem;
-        border-right: 1px solid var(--border-color);
+    .toolbar button, .toolbar select {
+      background: #2a2a4e;
+      color: #fff;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
 
-    .toolbar-group:last-child {
-        border-right: none;
+    .toolbar button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
-    .tool-btn {
-        width: 36px;
-        height: 36px;
-        border: none;
-        background: transparent;
-        color: var(--text-secondary);
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .main {
+      display: flex;
+      padding: 1rem;
+      flex-wrap: wrap;
     }
 
-    .tool-btn:hover {
-        background: rgba(108, 92, 231, 0.2);
-        color: var(--accent-purple);
-        transform: scale(1.1);
+    #editor {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      min-height: 400px;
+      outline: none;
+      margin-right: 1rem;
     }
 
-    .tool-btn.active {
-        background: var(--accent-purple);
-        color: white;
+    .chatbot, .file-manager {
+      width: 100%;
+      max-width: 300px;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      margin-top: 1rem;
     }
 
-    .font-select, .size-select {
-        background: transparent;
-        border: 1px solid var(--border-color);
-        color: var(--text-primary);
-        padding: 0.5rem;
-        border-radius: 6px;
-        outline: none;
+    .chatbot form, .file-manager form {
+      display: flex;
+      gap: 0.5rem;
     }
 
-    /* Editor */
-    .editor {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        padding: 2rem;
-        overflow-y: auto;
+    .chatbot input, .file-manager input {
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 4px;
     }
 
-    .document {
-        width: 8.5in;
-        min-height: 11in;
-        background: white;
-        color: black;
-        padding: 1in;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        border-radius: 8px;
-        position: relative;
+    .chatbot button, .file-manager button {
+      background: #2a2a4e;
+      color: #fff;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
-    .editor-content {
-        min-height: 9in;
-        outline: none;
-        line-height: 1.6;
-        font-size: 12pt;
-        font-family: 'Times New Roman', serif;
+    .file-manager ul {
+      list-style: none;
+      padding: 0;
     }
 
-    /* AI Chat Panel */
-    .ai-panel {
-        width: 300px;
-        background: rgba(22, 33, 62, 0.8);
-        backdrop-filter: blur(10px);
-        border-left: 1px solid var(--border-color);
-        display: flex;
-        flex-direction: column;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
+    .file-manager li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
     }
 
-    .ai-panel.open {
-        transform: translateX(0);
+    @media (min-width: 768px) {
+      .chatbot, .file-manager {
+        margin-top: 0;
+      }
     }
-
-    .ai-header {
-        padding: 1rem;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .ai-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(45deg, var(--accent-purple), var(--accent-blue));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-    }
-
-    .ai-chat {
-        flex: 1;
-        padding: 1rem;
-        overflow-y: auto;
-    }
-
-    .ai-input {
-        padding: 1rem;
-        border-top: 1px solid var(--border-color);
-    }
-
-    .ai-input-field {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid var(--border-color);
-        color: var(--text-primary);
-        padding: 0.7rem;
-        border-radius: 8px;
-        outline: none;
-        resize: none;
-    }
-
-    .message {
-        margin-bottom: 1rem;
-        padding: 0.7rem;
-        border-radius: 8px;
-    }
-
-    .message.user {
-        background: rgba(108, 92, 231, 0.2);
-        margin-left: 2rem;
-    }
-
-    .message.ai {
-        background: rgba(116, 185, 255, 0.2);
-        margin-right: 2rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .sidebar {
-            width: 200px;
-        }
-        
-        .ai-panel {
-            width: 250px;
-        }
-        
-        .document {
-            width: 100%;
-            margin: 0;
-        }
-        
-        .main-container {
-            flex-direction: column;
-        }
-    }
-
-    /* Status Bar */
-    .status-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.5rem 1rem;
-        background: rgba(26, 26, 46, 0.8);
-        border-top: 1px solid var(--border-color);
-        font-size: 0.85rem;
-        color: var(--text-secondary);
-    }
-
-    .word-count {
-        display: flex;
-        gap: 1rem;
-    }
-
-    /* Loading spinner */
-    .spinner {
-        width: 20px;
-        height: 20px;
-        border: 2px solid transparent;
-        border-top: 2px solid var(--accent-purple);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* Modal styles */
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .modal.active {
-        display: flex;
-    }
-
-    .modal-content {
-        background: var(--secondary-bg);
-        border-radius: 12px;
-        padding: 2rem;
-        max-width: 500px;
-        width: 90%;
-        border: 1px solid var(--border-color);
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
-
-    .modal-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
-
-    .close-btn {
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        font-size: 1.5rem;
-        cursor: pointer;
-    }
-</style>
-```
-
+  </style>
 </head>
-<body>
-    <!-- Animated stars background -->
-    <div class="stars" id="stars"></div>
-
-```
-<!-- Header -->
-<header class="header">
-    <div class="logo">
-        <i class="fas fa-star"></i>
-        <span>StarScript</span>
+<body class="cosmic">
+  <header>
+    <h1>StarScript</h1>
+    <button onclick="toggleTheme()">Toggle Theme</button>
+  </header>
+  <div class="toolbar">
+    <button onclick="document.execCommand('bold')">Bold</button>
+    <button onclick="document.execCommand('italic')">Italic</button>
+    <button onclick="document.execCommand('underline')">Underline</button>
+    <select onchange="document.execCommand('fontSize', false, this.value)">
+      <option value="3">Normal</option>
+      <option value="5">Large</option>
+      <option value="7">Huge</option>
+    </select>
+    <button onclick="document.execCommand('insertUnorderedList')">Bullet List</button>
+    <button onclick="document.execCommand('insertOrderedList')">Numbered List</button>
+    <button onclick="saveAsTxt()">Save as TXT</button>
+  </div>
+  <div class="main">
+    <div id="editor" contenteditable="true" oninput="updateWordCount()">
+      Start writing among the stars...
     </div>
-    <div class="header-actions">
-        <button class="btn btn-secondary" onclick="openNewDocument()">
-            <i class="fas fa-file"></i> New
-        </button>
-        <button class="btn btn-secondary" onclick="saveDocument()">
-            <i class="fas fa-save"></i> Save
-        </button>
-        <button class="btn btn-secondary" onclick="exportDocument()">
-            <i class="fas fa-download"></i> Export
-        </button>
-        <button class="btn btn-primary" onclick="toggleAI()">
-            <i class="fas fa-robot"></i> StarBot
-        </button>
+    <div class="chatbot">
+      <h3>StarBot</h3>
+      <form onsubmit="handleChatbotSubmit(event)">
+        <input type="text" id="chatbot-input" placeholder="Type or speak a command...">
+        <button type="submit">Send</button>
+        <button type="button" onclick="handleVoice()">🎙️ Voice</button>
+      </form>
+      <p id="chatbot-response"></p>
     </div>
-</header>
-
-<!-- Main Container -->
-<div class="main-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-section">
-            <div class="sidebar-title">Recent Documents</div>
-            <div class="document-item active" onclick="loadDocument('untitled')">
-                <i class="fas fa-file-alt"></i>
-                <span>Untitled Document</span>
-            </div>
-        </div>
-        
-        <div class="sidebar-section">
-            <div class="sidebar-title">Templates</div>
-            <div class="document-item" onclick="loadTemplate('resume')">
-                <i class="fas fa-user-tie"></i>
-                <span>Resume</span>
-            </div>
-            <div class="document-item" onclick="loadTemplate('letter')">
-                <i class="fas fa-envelope"></i>
-                <span>Business Letter</span>
-            </div>
-            <div class="document-item" onclick="loadTemplate('essay')">
-                <i class="fas fa-graduation-cap"></i>
-                <span>Essay</span>
-            </div>
-        </div>
-    </aside>
-
-    <!-- Editor Container -->
-    <main class="editor-container">
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <div class="toolbar-group">
-                <button class="tool-btn" onclick="execCommand('undo')" title="Undo">
-                    <i class="fas fa-undo"></i>
-                </button>
-                <button class="tool-btn" onclick="execCommand('redo')" title="Redo">
-                    <i class="fas fa-redo"></i>
-                </button>
-            </div>
-            
-            <div class="toolbar-group">
-                <select class="font-select" onchange="changeFont(this.value)">
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Arial">Arial</option>
-                    <option value="Helvetica">Helvetica</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Verdana">Verdana</option>
-                </select>
-                <select class="size-select" onchange="changeFontSize(this.value)">
-                    <option value="8">8</option>
-                    <option value="10">10</option>
-                    <option value="12" selected>12</option>
-                    <option value="14">14</option>
-                    <option value="16">16</option>
-                    <option value="18">18</option>
-                    <option value="24">24</option>
-                    <option value="36">36</option>
-                </select>
-            </div>
-
-            <div class="toolbar-group">
-                <button class="tool-btn" onclick="execCommand('bold')" title="Bold">
-                    <i class="fas fa-bold"></i>
-                </button>
-                <button class="tool-btn" onclick="execCommand('italic')" title="Italic">
-                    <i class="fas fa-italic"></i>
-                </button>
-                <button class="tool-btn" onclick="execCommand('underline')" title="Underline">
-                    <i class="fas fa-underline"></i>
-                </button>
-            </div>
-
-            <div class="toolbar-group">
-                <button class="tool-btn" onclick="execCommand('justifyLeft')" title="Align Left">
-                    <i class="fas fa-align-left"></i>
-                </button>
-                <button class="tool-btn" onclick="execCommand('justifyCenter')" title="Center">
-                    <i class="fas fa-align-center"></i>
-                </button>
-                <button class="tool-btn" onclick="execCommand('justifyRight')" title="Align Right">
-                    <i class="fas fa-align-right"></i>
-                </button>
-                <button class="tool-btn" onclick="execCommand('justifyFull')" title="Justify">
-                    <i class="fas fa-align-justify"></i>
-                </button>
-            </div>
-
-            <div class="toolbar-group">
-                <button class="tool-btn" onclick="execCommand('insertUnorderedList')" title="Bullet List">
-                    <i class="fas fa-list-ul"></i>
-                </button>
-                <button class="tool-btn" onclick="execCommand('insertOrderedList')" title="Numbered List">
-                    <i class="fas fa-list-ol"></i>
-                </button>
-            </div>
-
-            <div class="toolbar-group">
-                <button class="tool-btn" onclick="findReplace()" title="Find & Replace">
-                    <i class="fas fa-search"></i>
-                </button>
-                <button class="tool-btn" onclick="insertTable()" title="Insert Table">
-                    <i class="fas fa-table"></i>
-                </button>
-                <button class="tool-btn" onclick="insertImage()" title="Insert Image">
-                    <i class="fas fa-image"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Editor -->
-        <div class="editor">
-            <div class="document">
-                <div class="editor-content" contenteditable="true" id="editor" oninput="updateWordCount()">
-                    <p>Welcome to StarScript! Start writing your masterpiece...</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- AI Panel -->
-    <aside class="ai-panel" id="aiPanel">
-        <div class="ai-header">
-            <div class="ai-avatar">
-                <i class="fas fa-robot"></i>
-            </div>
-            <div>
-                <div style="font-weight: 600;">StarBot</div>
-                <div style="font-size: 0.8rem; color: var(--text-secondary);">AI Writing Assistant</div>
-            </div>
-            <button class="close-btn" onclick="toggleAI()">×</button>
-        </div>
-        
-        <div class="ai-chat" id="aiChat">
-            <div class="message ai">
-                <strong>StarBot:</strong> Hello! I'm here to help you write better. Try asking me to:
-                <br>• Fix grammar and spelling
-                <br>• Improve writing style
-                <br>• Summarize content
-                <br>• Translate text
-                <br>• And much more!
-            </div>
-        </div>
-        
-        <div class="ai-input">
-            <textarea class="ai-input-field" id="aiInput" placeholder="Ask StarBot anything..." rows="3" onkeypress="handleAIInput(event)"></textarea>
-            <button class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" onclick="sendAIMessage()">
-                <i class="fas fa-paper-plane"></i> Send
-            </button>
-        </div>
-    </aside>
-</div>
-
-<!-- Status Bar -->
-<div class="status-bar">
-    <div class="word-count">
-        <span id="wordCount">Words: 8</span>
-        <span id="charCount">Characters: 47</span>
+    <div class="file-manager">
+      <h3>Files</h3>
+      <form onsubmit="saveDocument(event)">
+        <input type="text" id="file-name" placeholder="File name">
+        <button type="submit">Save</button>
+      </form>
+      <ul id="file-list"></ul>
     </div>
-    <div>
-        <span id="saveStatus">All changes saved</span>
-    </div>
-</div>
+  </div>
+  <script src="https://unpkg.com/compromise@latest/builds/compromise.min.js"></script>
+  <script>
+    let theme = 'cosmic';
+    let files = JSON.parse(localStorage.getItem('starscript-files')) || [];
 
-<!-- Modals -->
-<div class="modal" id="findModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <div class="modal-title">Find & Replace</div>
-            <button class="close-btn" onclick="closeModal('findModal')">×</button>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <input type="text" id="findText" placeholder="Find..." style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: transparent; color: var(--text-primary);">
-            <input type="text" id="replaceText" placeholder="Replace with..." style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; background: transparent; color: var(--text-primary);">
-            <div style="display: flex; gap: 0.5rem;">
-                <button class="btn btn-secondary" onclick="findNext()">Find Next</button>
-                <button class="btn btn-primary" onclick="replaceAll()">Replace All</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Initialize stars
-    function createStars() {
-        const starsContainer = document.getElementById('stars');
-        const numStars = 100;
-        
-        for (let i = 0; i < numStars; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            starsContainer.appendChild(star);
-        }
-    }
-
-    // Editor functions
-    function execCommand(command, value = null) {
-        document.execCommand(command, false, value);
-        updateWordCount();
-    }
-
-    function changeFont(font) {
-        execCommand('fontName', font);
-    }
-
-    function changeFontSize(size) {
-        execCommand('fontSize', size);
+    function toggleTheme() {
+      theme = theme === 'cosmic' ? 'light' : theme === 'light' ? 'dark' : 'cosmic';
+      document.body.className = theme;
     }
 
     function updateWordCount() {
-        const editor = document.getElementById('editor');
-        const text = editor.innerText || editor.textContent;
-        const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
-        const chars = text.length;
-        
-        document.getElementById('wordCount').textContent = `Words: ${words}`;
-        document.getElementById('charCount').textContent = `Characters: ${chars}`;
-        
-        // Auto-save
-        localStorage.setItem('starscript-content', editor.innerHTML);
-        document.getElementById('saveStatus').textContent = 'All changes saved';
+      const text = document.getElementById('editor').innerText;
+      const words = text.trim().split(/\s+/).length;
+      console.log(`Word count: ${words}`); // Display in console for now
     }
 
-    // Document functions
-    function openNewDocument() {
-        if (confirm('Create new document? Unsaved changes will be lost.')) {
-            document.getElementById('editor').innerHTML = '<p>Start writing...</p>';
-            updateWordCount();
-        }
+    function saveAsTxt() {
+      const content = document.getElementById('editor').innerHTML;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.txt';
+      a.click();
+      URL.revokeObjectURL(url);
     }
 
-    function saveDocument() {
+    function handleVoice() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('chatbot-input').value = transcript;
+        processCommand(transcript);
+      };
+      recognition.start();
+    }
+
+    function processCommand(command) {
+      const doc = window.nlp(command);
+      const responseEl = document.getElementById('chatbot-response');
+      if (doc.has('make bold')) {
+        document.execCommand('bold');
+        responseEl.textContent = 'Applied bold formatting.';
+      } else if (doc.has('summarize')) {
+        const text = document.getElementById('editor').innerText;
+        const summary = window.nlp(text).sentences().slice(0, 1).text();
+        responseEl.textContent = `Summary: ${summary}`;
+      } else {
+        responseEl.textContent = 'Command not recognized. Try "make bold" or "summarize".';
+      }
+    }
+
+    function handleChatbotSubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('chatbot-input').value;
+      processCommand(input);
+      document.getElementById('chatbot-input').value = '';
+    }
+
+    function saveDocument(event) {
+      event.preventDefault();
+      const name = document.getElementById('file-name').value;
+      if (name) {
         const content = document.getElementById('editor').innerHTML;
-        const blob = new Blob([content], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'document.html';
-        a.click();
-        URL.revokeObjectURL(url);
+        files.push({ id: Date.now(), name, content });
+        localStorage.setItem('starscript-files', JSON.stringify(files));
+        document.getElementById('file-name').value = '';
+        renderFiles();
+      }
     }
 
-    function exportDocument() {
-        const content = document.getElementById('editor').innerHTML;
-        // This would integrate with a PDF generation library
-        alert('Export feature - would integrate with PDF generator');
+    function deleteDocument(id) {
+      files = files.filter(file => file.id !== id);
+      localStorage.setItem('starscript-files', JSON.stringify(files));
+      renderFiles();
     }
 
-    // AI functions
-    function toggleAI() {
-        const panel = document.getElementById('aiPanel');
-        panel.classList.toggle('open');
+    function loadDocument(id) {
+      const file = files.find(file => file.id === id);
+      if (file) {
+        document.getElementById('editor').innerHTML = file.content;
+      }
     }
 
-    function handleAIInput(event) {
-        if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();
-            sendAIMessage();
-        }
+    function renderFiles() {
+      const fileList = document.getElementById('file-list');
+      fileList.innerHTML = '';
+      files.forEach(file => {
+        const li = document.createElement('li');
+        li.innerHTML = `${file.name} <button onclick="loadDocument(${file.id})">Load</button> <button onclick="deleteDocument(${file.id})">Delete</button>`;
+        fileList.appendChild(li);
+      });
     }
 
-    function sendAIMessage() {
-        const input = document.getElementById('aiInput');
-        const chat = document.getElementById('aiChat');
-        const message = input.value.trim();
-        
-        if (!message) return;
-        
-        // Add user message
-        const userMsg = document.createElement('div');
-        userMsg.className = 'message user';
-        userMsg.innerHTML = `<strong>You:</strong> ${message}`;
-        chat.appendChild(userMsg);
-        
-        input.value = '';
-        
-        // Simulate AI response (in real app, this would call AI API)
-        setTimeout(() => {
-            const aiMsg = document.createElement('div');
-            aiMsg.className = 'message ai';
-            aiMsg.innerHTML = `<strong>StarBot:</strong> I understand you want to "${message}". This would normally connect to an AI service to process your request and help edit your document.`;
-            chat.appendChild(aiMsg);
-            chat.scrollTop = chat.scrollHeight;
-        }, 1000);
-        
-        chat.scrollTop = chat.scrollHeight;
-    }
-
-    // Modal functions
-    function findReplace() {
-        document.getElementById('findModal').classList.add('active');
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('active');
-    }
-
-    function findNext() {
-        const findText = document.getElementById('findText').value;
-        if (findText) {
-            window.find(findText);
-        }
-    }
-
-    function replaceAll() {
-        const findText = document.getElementById('findText').value;
-        const replaceText = document.getElementById('replaceText').value;
-        
-        if (findText) {
-            const editor = document.getElementById('editor');
-            const content = editor.innerHTML;
-            const newContent = content.replace(new RegExp(findText, 'gi'), replaceText);
-            editor.innerHTML = newContent;
-            updateWordCount();
-            closeModal('findModal');
-        }
-    }
-
-    // Template functions
-    function loadTemplate(type) {
-        const editor = document.getElementById('editor');
-        const templates = {
-            resume: `
-                <h1>Your Name</h1>
-                <p>Email: your.email@example.com | Phone: (555) 123-4567</p>
-                <h2>Professional Summary</h2>
-                <p>Brief summary of your experience and skills...</p>
-                <h2>Experience</h2>
-                <p><strong>Job Title</strong> - Company Name (Year - Year)</p>
-                <ul><li>Key achievement or responsibility</li></ul>
-            `,
-            letter: `
-                <p>[Your Name]<br>[Your Address]<br>[City, State ZIP]<br>[Date]</p>
-                <p>[Recipient Name]<br>[Recipient Address]<br>[City, State ZIP]</p>
-                <p>Dear [Recipient Name],</p>
-                <p>Your letter content goes here...</p>
-                <p>Sincerely,<br>[Your Name]</p>
-            `,
-            essay: `
-                <h1>Essay Title</h1>
-                <p><strong>Introduction</strong></p>
-                <p>Your introduction paragraph...</p>
-                <p><strong>Body Paragraph 1</strong></p>
-                <p>Your first main point...</p>
-                <p><strong>Conclusion</strong></p>
-                <p>Your conclusion...</p>
-            `
-        };
-        
-        if (templates[type]) {
-            editor.innerHTML = templates[type];
-            updateWordCount();
-        }
-    }
-
-    function loadDocument(name) {
-        // Remove active class from all items
-        document.querySelectorAll('.document-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        // Add active class to clicked item
-        event.target.closest('.document-item').classList.add('active');
-    }
-
-    function insertTable() {
-        const tableHTML = `
-            <table border="1" style="border-collapse: collapse; width: 100%;">
-                <tr><td>Cell 1</td><td>Cell 2</td></tr>
-                <tr><td>Cell 3</td><td>Cell 4</td></tr>
-            </table>
-        `;
-        execCommand('insertHTML', tableHTML);
-    }
-
-    function insertImage() {
-        const url = prompt('Enter image URL:');
-        if (url) {
-            execCommand('insertImage', url);
-        }
-    }
-
-    // Initialize app
-    document.addEventListener('DOMContentLoaded', function() {
-        createStars();
-        
-        // Load saved content
-        const savedContent = localStorage.getItem('starscript-content');
-        if (savedContent) {
-            document.getElementById('editor').innerHTML = savedContent;
-        }
-        
-        updateWordCount();
-        
-        // Auto-save every 30 seconds
-        setInterval(() => {
-            const content = document.getElementById('editor').innerHTML;
-            localStorage.setItem('starscript-content', content);
-        }, 30000);
-    });
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey || e.metaKey) {
-            switch(e.key) {
-                case 'b':
-                    e.preventDefault();
-                    execCommand('bold');
-                    break;
-                case 'i':
-                    e.preventDefault();
-                    execCommand('italic');
-                    break;
-                case 'u':
-                    e.preventDefault();
-                    execCommand('underline');
-                    break;
-                case 's':
-                    e.preventDefault();
-                    saveDocument();
-                    break;
-                case 'f':
-                    e.preventDefault();
-                    findReplace();
-                    break;
-            }
-        }
-    });
-</script>
-```
-
+    // Initialize
+    renderFiles();
+    updateWordCount();
+  </script>
 </body>
 </html>
