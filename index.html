@@ -1,271 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1a1a2e">
-  <title>StarScript</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StarScript - Write Among the Stars</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Inter', 'Arial', sans-serif;
-      min-height: 100vh;
-      transition: background 0.3s;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #0e0e2c, #1f1f3e);
+      color: white;
     }
-
-    .cosmic {
-      background: linear-gradient(135deg, #1a1a2e, #162447);
-      color: #fff;
-      animation: stars 20s infinite;
-    }
-
-    .light {
-      background: #fff;
-      color: #000;
-    }
-
-    .dark {
-      background: #111;
-      color: #fff;
-    }
-
-    @keyframes stars {
-      0%, 100% { background-position: 0 0; }
-      50% { background-position: 100% 100%; }
-    }
-
     header {
+      background: #12122c;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    #toolbar {
+      padding: 10px;
+      background: #1a1a3a;
       display: flex;
-      justify-content: space-between;
-      padding: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 0.5rem;
-      padding: 0.5rem;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      margin: 1rem;
-    }
-
-    .toolbar button, .toolbar select {
-      background: #2a2a4e;
-      color: #fff;
-      border: none;
-      padding: 0.5rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .toolbar button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    }
-
-    .main {
-      display: flex;
-      padding: 1rem;
       flex-wrap: wrap;
+      gap: 5px;
     }
-
-    #editor {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 1rem;
-      border-radius: 8px;
-      min-height: 400px;
-      outline: none;
-      margin-right: 1rem;
-    }
-
-    .chatbot, .file-manager {
-      width: 100%;
-      max-width: 300px;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      margin-top: 1rem;
-    }
-
-    .chatbot form, .file-manager form {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .chatbot input, .file-manager input {
-      flex: 1;
-      padding: 0.5rem;
+    #toolbar button, #toolbar select {
+      padding: 5px 10px;
+      background: #2e2e50;
+      color: white;
       border: none;
-      border-radius: 4px;
-    }
-
-    .chatbot button, .file-manager button {
-      background: #2a2a4e;
-      color: #fff;
-      border: none;
-      padding: 0.5rem;
-      border-radius: 4px;
+      border-radius: 3px;
       cursor: pointer;
     }
-
-    .file-manager ul {
-      list-style: none;
-      padding: 0;
+    #editor {
+      padding: 20px;
+      height: 60vh;
+      overflow-y: auto;
+      background: white;
+      color: black;
+      margin: 10px;
+      border-radius: 5px;
     }
-
-    .file-manager li {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.5rem 0;
+    #editor:focus {
+      outline: none;
     }
-
-    @media (min-width: 768px) {
-      .chatbot, .file-manager {
-        margin-top: 0;
-      }
+    #starbot-box {
+      background: #14142d;
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+    }
+    #starbot-box input {
+      width: 80%;
+      padding: 8px;
+      border-radius: 3px;
+      border: none;
+    }
+    #starbot-box button {
+      padding: 8px;
+      margin-left: 5px;
+      background: #4e4eaa;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #12122c;
+      font-size: 12px;
     }
   </style>
 </head>
-<body class="cosmic">
-  <header>
-    <h1>StarScript</h1>
-    <button onclick="toggleTheme()">Toggle Theme</button>
-  </header>
-  <div class="toolbar">
-    <button onclick="document.execCommand('bold')">Bold</button>
-    <button onclick="document.execCommand('italic')">Italic</button>
-    <button onclick="document.execCommand('underline')">Underline</button>
-    <select onchange="document.execCommand('fontSize', false, this.value)">
-      <option value="3">Normal</option>
-      <option value="5">Large</option>
-      <option value="7">Huge</option>
-    </select>
-    <button onclick="document.execCommand('insertUnorderedList')">Bullet List</button>
-    <button onclick="document.execCommand('insertOrderedList')">Numbered List</button>
-    <button onclick="saveAsTxt()">Save as TXT</button>
-  </div>
-  <div class="main">
-    <div id="editor" contenteditable="true" oninput="updateWordCount()">
-      Start writing among the stars...
-    </div>
-    <div class="chatbot">
-      <h3>StarBot</h3>
-      <form onsubmit="handleChatbotSubmit(event)">
-        <input type="text" id="chatbot-input" placeholder="Type or speak a command...">
-        <button type="submit">Send</button>
-        <button type="button" onclick="handleVoice()">🎙️ Voice</button>
-      </form>
-      <p id="chatbot-response"></p>
-    </div>
-    <div class="file-manager">
-      <h3>Files</h3>
-      <form onsubmit="saveDocument(event)">
-        <input type="text" id="file-name" placeholder="File name">
-        <button type="submit">Save</button>
-      </form>
-      <ul id="file-list"></ul>
-    </div>
-  </div>
-  <script src="https://unpkg.com/compromise@latest/builds/compromise.min.js"></script>
-  <script>
-    let theme = 'cosmic';
-    let files = JSON.parse(localStorage.getItem('starscript-files')) || [];
+<body>
 
-    function toggleTheme() {
-      theme = theme === 'cosmic' ? 'light' : theme === 'light' ? 'dark' : 'cosmic';
-      document.body.className = theme;
-    }
+<header>🌟 StarScript - Write Among the Stars</header>
 
-    function updateWordCount() {
-      const text = document.getElementById('editor').innerText;
-      const words = text.trim().split(/\s+/).length;
-      console.log(`Word count: ${words}`); // Display in console for now
-    }
+<div id="toolbar">
+  <button onclick="execCmd('bold')"><b>B</b></button>
+  <button onclick="execCmd('italic')"><i>I</i></button>
+  <button onclick="execCmd('underline')"><u>U</u></button>
+  <button onclick="execCmd('justifyLeft')">Left</button>
+  <button onclick="execCmd('justifyCenter')">Center</button>
+  <button onclick="execCmd('justifyRight')">Right</button>
+  <button onclick="execCmd('insertUnorderedList')">• List</button>
+  <button onclick="execCmd('insertOrderedList')">1. List</button>
+  <button onclick="savePDF()">Save PDF</button>
+</div>
 
-    function saveAsTxt() {
-      const content = document.getElementById('editor').innerHTML;
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'document.txt';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
+<div id="editor" contenteditable="true">
+  Start writing your cosmic journey here...
+</div>
 
-    function handleVoice() {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById('chatbot-input').value = transcript;
-        processCommand(transcript);
-      };
-      recognition.start();
-    }
+<div id="starbot-box">
+  <input type="text" id="botCommand" placeholder="Ask StarBot to help edit... (e.g. 'make it bold')" />
+  <button onclick="handleBot()">Ask StarBot</button>
+  <button onclick="startVoice()">🎤</button>
+</div>
 
-    function processCommand(command) {
-      const doc = window.nlp(command);
-      const responseEl = document.getElementById('chatbot-response');
-      if (doc.has('make bold')) {
-        document.execCommand('bold');
-        responseEl.textContent = 'Applied bold formatting.';
-      } else if (doc.has('summarize')) {
-        const text = document.getElementById('editor').innerText;
-        const summary = window.nlp(text).sentences().slice(0, 1).text();
-        responseEl.textContent = `Summary: ${summary}`;
-      } else {
-        responseEl.textContent = 'Command not recognized. Try "make bold" or "summarize".';
-      }
-    }
+<footer>Built with love by Cosmos Coderr © 2025</footer>
 
-    function handleChatbotSubmit(event) {
-      event.preventDefault();
-      const input = document.getElementById('chatbot-input').value;
-      processCommand(input);
-      document.getElementById('chatbot-input').value = '';
-    }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  function execCmd(command) {
+    document.execCommand(command, false, null);
+  }
 
-    function saveDocument(event) {
-      event.preventDefault();
-      const name = document.getElementById('file-name').value;
-      if (name) {
-        const content = document.getElementById('editor').innerHTML;
-        files.push({ id: Date.now(), name, content });
-        localStorage.setItem('starscript-files', JSON.stringify(files));
-        document.getElementById('file-name').value = '';
-        renderFiles();
-      }
-    }
+  function savePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const text = document.getElementById('editor').innerText;
+    doc.text(text, 10, 10);
+    doc.save("StarScript_Document.pdf");
+  }
 
-    function deleteDocument(id) {
-      files = files.filter(file => file.id !== id);
-      localStorage.setItem('starscript-files', JSON.stringify(files));
-      renderFiles();
-    }
+  function handleBot() {
+    const command = document.getElementById("botCommand").value.toLowerCase();
+    if (command.includes("bold")) execCmd("bold");
+    else if (command.includes("italic")) execCmd("italic");
+    else if (command.includes("underline")) execCmd("underline");
+    else if (command.includes("center")) execCmd("justifyCenter");
+    else if (command.includes("summarize")) alert("Offline summarization not available yet.");
+    else alert("StarBot: Sorry, I don’t recognize that command (offline mode).");
+  }
 
-    function loadDocument(id) {
-      const file = files.find(file => file.id === id);
-      if (file) {
-        document.getElementById('editor').innerHTML = file.content;
-      }
-    }
+  function startVoice() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.start();
+    recognition.onresult = function(event) {
+      const transcript = event.results[0][0].transcript;
+      document.getElementById("botCommand").value = transcript;
+      handleBot();
+    };
+    recognition.onerror = function() {
+      alert("Voice recognition failed. Try again.");
+    };
+  }
+</script>
 
-    function renderFiles() {
-      const fileList = document.getElementById('file-list');
-      fileList.innerHTML = '';
-      files.forEach(file => {
-        const li = document.createElement('li');
-        li.innerHTML = `${file.name} <button onclick="loadDocument(${file.id})">Load</button> <button onclick="deleteDocument(${file.id})">Delete</button>`;
-        fileList.appendChild(li);
-      });
-    }
-
-    // Initialize
-    renderFiles();
-    updateWordCount();
-  </script>
 </body>
 </html>
