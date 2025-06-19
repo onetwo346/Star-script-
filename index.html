@@ -1,147 +1,411 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StarScript - Write Among the Stars</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a23">
+  <title>StarScript</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #0e0e2c, #1f1f3e);
-      color: white;
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      transition: background 0.3s;
+      overflow-x: hidden;
+    }
+    .cosmic {
+      background: linear-gradient(135deg, #0a0a23, #1c2526);
+      color: #e0e0ff;
+      position: relative;
+    }
+    .cosmic::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"%3E%3Cdefs%3E%3CradialGradient id="star"%3E%3Cstop offset="0%" stop-color="white"/%3E%3Cstop offset="100%" stop-color="transparent"/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx="10%" cy="20%" r="2" fill="url(%23star)"/%3E%3Ccircle cx="80%" cy="30%" r="1" fill="url(%23star)"/%3E%3Ccircle cx="50%" cy="70%" r="1.5" fill="url(%23star)"/%3E%3Ccircle cx="20%" cy="50%" r="1" fill="url(%23star)"/%3E%3C/svg%3E');
+      animation: twinkle 10s infinite;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+    .light {
+      background: #f5f5f5;
+      color: #333;
+    }
+    .dark {
+      background: #1a1a1a;
+      color: #e0e0e0;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
     }
     header {
-      background: #12122c;
-      padding: 10px 20px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-      letter-spacing: 1px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     }
-    #toolbar {
-      padding: 10px;
-      background: #1a1a3a;
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+    }
+    .toolbar {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+      margin: 1rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
-    #toolbar button, #toolbar select {
-      padding: 5px 10px;
-      background: #2e2e50;
-      color: white;
+    .toolbar button, .toolbar select {
+      background: linear-gradient(135deg, #2a2a4e, #3b3b6b);
+      color: #fff;
       border: none;
-      border-radius: 3px;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-size: 0.9rem;
+    }
+    .toolbar button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    }
+    .main {
+      display: flex;
+      padding: 1rem 2rem;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    #editor-container {
+      flex: 2;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      min-height: 500px;
+    }
+    .ql-editor {
+      min-height: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      color: inherit;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    #word-count {
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    .chatbot, .file-manager {
+      flex: 1;
+      max-width: 350px;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s;
+    }
+    .chatbot.hidden {
+      transform: translateX(100%);
+      display: none;
+    }
+    .chatbot form, .file-manager form {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .chatbot input, .file-manager input {
+      flex: 1;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      color: inherit;
+    }
+    .chatbot button, .file-manager button {
+      background: linear-gradient(135deg, #2a2a4e, #3b3b6b);
+      color: #fff;
+      border: none;
+      padding: 0.7rem;
+      border-radius: 6px;
       cursor: pointer;
     }
-    #editor {
-      padding: 20px;
-      height: 60vh;
-      overflow-y: auto;
-      background: white;
-      color: black;
-      margin: 10px;
-      border-radius: 5px;
+    .file-manager ul {
+      list-style: none;
+      padding: 0;
     }
-    #editor:focus {
-      outline: none;
+    .file-manager li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    #starbot-box {
-      background: #14142d;
-      padding: 10px;
-      margin: 10px;
-      border-radius: 5px;
-    }
-    #starbot-box input {
+    .focus-mode #editor-container {
+      position: fixed;
+      top: 10%;
+      left: 10%;
       width: 80%;
-      padding: 8px;
-      border-radius: 3px;
-      border: none;
+      height: 80%;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 2rem;
     }
-    #starbot-box button {
-      padding: 8px;
-      margin-left: 5px;
-      background: #4e4eaa;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
+    .focus-mode .toolbar, .focus-mode .chatbot, .focus-mode .file-manager, .focus-mode header {
+      display: none;
     }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background: #12122c;
-      font-size: 12px;
+    @media (max-width: 768px) {
+      .main {
+        flex-direction: column;
+      }
+      .chatbot, .file-manager {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
-<body>
-
-<header>🌟 StarScript - Write Among the Stars</header>
-
-<div id="toolbar">
-  <button onclick="execCmd('bold')"><b>B</b></button>
-  <button onclick="execCmd('italic')"><i>I</i></button>
-  <button onclick="execCmd('underline')"><u>U</u></button>
-  <button onclick="execCmd('justifyLeft')">Left</button>
-  <button onclick="execCmd('justifyCenter')">Center</button>
-  <button onclick="execCmd('justifyRight')">Right</button>
-  <button onclick="execCmd('insertUnorderedList')">• List</button>
-  <button onclick="execCmd('insertOrderedList')">1. List</button>
-  <button onclick="savePDF()">Save PDF</button>
-</div>
-
-<div id="editor" contenteditable="true">
-  Start writing your cosmic journey here...
-</div>
-
-<div id="starbot-box">
-  <input type="text" id="botCommand" placeholder="Ask StarBot to help edit... (e.g. 'make it bold')" />
-  <button onclick="handleBot()">Ask StarBot</button>
-  <button onclick="startVoice()">🎤</button>
-</div>
-
-<footer>Built with love by Cosmos Coderr © 2025</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-  function execCmd(command) {
-    document.execCommand(command, false, null);
-  }
-
-  function savePDF() {
+<body class="cosmic">
+  <header>
+    <h1>StarScript</h1>
+    <div>
+      <button onclick="toggleTheme()">Toggle Theme</button>
+      <button onclick="toggleChatbot()">Toggle StarBot</button>
+    </div>
+  </header>
+  <div class="toolbar">
+    <button onclick="quill.format('bold', true)">Bold</button>
+    <button onclick="quill.format('italic', true)">Italic</button>
+    <button onclick="quill.format('underline', true)">Underline</button>
+    <select onchange="quill.format('size', this.value)">
+      <option value="small">Small</option>
+      <option value="normal" selected>Normal</option>
+      <option value="large">Large</option>
+      <option value="huge">Huge</option>
+    </select>
+    <select onchange="quill.format('color', this.value)">
+      <option value="#ffffff">White</option>
+      <option value="#ff0000">Red</option>
+      <option value="#00ff00">Green</option>
+      <option value="#0000ff">Blue</option>
+    </select>
+    <button onclick="quill.format('list', 'bullet')">Bullet List</button>
+    <button onclick="quill.format('list', 'ordered')">Numbered List</button>
+    <button onclick="insertTable()">Insert Table</button>
+    <select onchange="loadTemplate(this.value)">
+      <option value="">Select Template</option>
+      <option value="resume">Resume</option>
+      <option value="letter">Letter</option>
+    </select>
+    <button onclick="exportPDF()">Export PDF</button>
+    <button onclick="toggleFocusMode()">Focus Mode</button>
+  </div>
+  <div class="main">
+    <div id="editor-container">
+      <div id="editor"></div>
+      <p id="word-count">Word count: 0</p>
+    </div>
+    <div class="chatbot">
+      <h3>StarBot</h3>
+      <form onsubmit="handleChatbotSubmit(event)">
+        <input type="text" id="chatbot-input" placeholder="Type or speak a command...">
+        <button type="submit">Send</button>
+        <button type="button" onclick="handleVoice()">🎙️ Voice</button>
+      </form>
+      <p id="chatbot-response"></p>
+    </div>
+    <div class="file-manager">
+      <h3>Files</h3>
+      <form onsubmit="saveDocument(event)">
+        <input type="text" id="file-name" placeholder="File name">
+        <input type="text" id="file-tag" placeholder="Tag (optional)">
+        <button type="submit">Save</button>
+      </form>
+      <ul id="file-list"></ul>
+    </div>
+  </div>
+  <audio id="ambient-music" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_8b67e7b562.mp3?filename=ambient-cinematic-piano-111.mp3"></audio>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <script src="https://unpkg.com/compromise@latest/builds/compromise.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const text = document.getElementById('editor').innerText;
-    doc.text(text, 10, 10);
-    doc.save("StarScript_Document.pdf");
-  }
-
-  function handleBot() {
-    const command = document.getElementById("botCommand").value.toLowerCase();
-    if (command.includes("bold")) execCmd("bold");
-    else if (command.includes("italic")) execCmd("italic");
-    else if (command.includes("underline")) execCmd("underline");
-    else if (command.includes("center")) execCmd("justifyCenter");
-    else if (command.includes("summarize")) alert("Offline summarization not available yet.");
-    else alert("StarBot: Sorry, I don’t recognize that command (offline mode).");
-  }
-
-  function startVoice() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'en-US';
-    recognition.start();
-    recognition.onresult = function(event) {
-      const transcript = event.results[0][0].transcript;
-      document.getElementById("botCommand").value = transcript;
-      handleBot();
+    let quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: false
+      }
+    });
+    let theme = 'cosmic';
+    let files = JSON.parse(localStorage.getItem('starscript-files')) || [];
+    let isFocusMode = false;
+    let isChatbotVisible = true;
+    const templates = {
+      resume: '<h1>Resume</h1><h2>Name</h2><p>Address | Phone | Email</p><h3>Experience</h3><ul><li>Job Title - Company (Year-Year)</li></ul><h3>Education</h3><ul><li>Degree - University (Year)</li></ul>',
+      letter: '<h1>Letter</h1><p>Dear [Recipient],</p><p>Your content here...</p><p>Sincerely,<br>Your Name</p>'
     };
-    recognition.onerror = function() {
-      alert("Voice recognition failed. Try again.");
-    };
-  }
-</script>
 
+    function toggleTheme() {
+      theme = theme === 'cosmic' ? 'light' : theme === 'light' ? 'dark' : 'cosmic';
+      document.body.className = theme;
+    }
+
+    function toggleChatbot() {
+      isChatbotVisible = !isChatbotVisible;
+      document.querySelector('.chatbot').classList.toggle('hidden');
+    }
+
+    function updateWordCount() {
+      const text = quill.getText();
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      document.getElementById('word-count').textContent = `Word count: ${words}`;
+    }
+
+    function exportPDF() {
+      const doc = new jsPDF();
+      const content = quill.root.innerHTML;
+      doc.html(content, {
+        callback: function (doc) {
+          doc.save('document.pdf');
+        },
+        x: 10,
+        y: 10
+      });
+    }
+
+    function insertTable() {
+      const tableHtml = '<table border="1"><tr><td>Cell 1</td><td>Cell 2</td></tr><tr><td>Cell 3</td><td>Cell 4</td></tr></table>';
+      quill.clipboard.dangerouslyPasteHTML(quill.getLength(), tableHtml);
+    }
+
+    function loadTemplate(template) {
+      if (template) {
+        quill.root.innerHTML = templates[template];
+        updateWordCount();
+      }
+    }
+
+    function toggleFocusMode() {
+      isFocusMode = !isFocusMode;
+      document.body.classList.toggle('focus-mode');
+      const audio = document.getElementById('ambient-music');
+      if (isFocusMode) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    }
+
+    function handleVoice() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('chatbot-input').value = transcript;
+        processCommand(transcript);
+      };
+      recognition.start();
+    }
+
+    function processCommand(command) {
+      const doc = window.nlp(command);
+      const responseEl = document.getElementById('chatbot-response');
+      if (doc.has('make bold')) {
+        quill.format('bold', true);
+        responseEl.textContent = 'Applied bold formatting.';
+      } else if (doc.has('summarize')) {
+        const text = quill.getText();
+        const summary = window.nlp(text).sentences().slice(0, 1).text();
+        responseEl.textContent = `Summary: ${summary}`;
+      } else if (doc.has('fix grammar')) {
+        responseEl.textContent = 'Basic grammar check: Ensure proper capitalization and punctuation.';
+      } else if (doc.has('add title')) {
+        quill.clipboard.dangerouslyPasteHTML(0, '<h1>New Title</h1>');
+        responseEl.textContent = 'Added a title.';
+      } else if (doc.has('make poetic')) {
+        const text = quill.getText();
+        quill.setText(text.replace(/is/g, 'doth').replace(/you/g, 'thou'));
+        responseEl.textContent = 'Text made more poetic.';
+      } else {
+        responseEl.textContent = 'Command not recognized. Try "make bold", "summarize", "fix grammar", "add title", or "make poetic".';
+      }
+      const utterance = new SpeechSynthesisUtterance(responseEl.textContent);
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function handleChatbotSubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('chatbot-input').value;
+      processCommand(input);
+      document.getElementById('chatbot-input').value = '';
+    }
+
+    function saveDocument(event) {
+      event.preventDefault();
+      const name = document.getElementById('file-name').value;
+      const tag = document.getElementById('file-tag').value;
+      if (name) {
+        const content = quill.root.innerHTML;
+        files.push({ id: Date.now(), name, tag, content });
+        localStorage.setItem('starscript-files', JSON.stringify(files));
+        document.getElementById('file-name').value = '';
+        document.getElementById('file-tag').value = '';
+        renderFiles();
+      }
+    }
+
+    function deleteDocument(id) {
+      files = files.filter(file => file.id !== id);
+      localStorage.setItem('starscript-files', JSON.stringify(files));
+      renderFiles();
+    }
+
+    function loadDocument(id) {
+      const file = files.find(file => file.id === id);
+      if (file) {
+        quill.root.innerHTML = file.content;
+        updateWordCount();
+      }
+    }
+
+    function renameDocument(id) {
+      const newName = prompt('Enter new name:');
+      if (newName) {
+        const file = files.find(file => file.id === id);
+        if (file) {
+          file.name = newName;
+          localStorage.setItem('starscript-files', JSON.stringify(files));
+          renderFiles();
+        }
+      }
+    }
+
+    function renderFiles() {
+      const fileList = document.getElementById('file-list');
+      fileList.innerHTML = '';
+      files.forEach(file => {
+        const li = document.createElement('li');
+        li.innerHTML = `${file.name} ${file.tag ? `[${file.tag}]` : ''} <button onclick="loadDocument(${file.id})">Load</button> <button onclick="renameDocument(${file.id})">Rename</button> <button onclick="deleteDocument(${file.id})">Delete</button>`;
+        fileList.appendChild(li);
+      });
+    }
+
+    // Initialize
+    quill.on('text-change', updateWordCount);
+    renderFiles();
+    updateWordCount();
+
+    // Spell check
+    document.getElementById('editor').spellcheck = true;
+  </script>
 </body>
 </html>
